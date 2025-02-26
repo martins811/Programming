@@ -1,0 +1,8 @@
+def city_country(city, country):
+    """Return a formatted city-country string."""
+    return f'"{city.title()}, {country.title()}"'
+
+# Calling the function with at least three city-country pairs
+print(city_country("santiago", "chile"))
+print(city_country("new york", "usa"))
+print(city_country("paris", "france"))
