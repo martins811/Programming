@@ -1,0 +1,51 @@
+import json
+import plotly.graph_objs as go
+from plotly.offline import iplot
+
+# Load the earthquake data
+filename = 'eq_data_30_day_m1.json'
+with open(filename) as f:
+    all_eq_data = json.load(f)
+    all_eq_dicts = all_eq_data['features']
+
+# Extract necessary information
+mags, lons, lats, hover_texts = [], [], [], []
+for eq_dict in all_eq_dicts:
+    mag = eq_dict['properties']['mag']
+    lon = eq_dict['geometry']['coordinates'][0]
+    lat = eq_dict['geometry']['coordinates'][1]
+    title = eq_dict['properties']['title']
+    mags.append(mag)
+    lons.append(lon)
+    lats.append(lat)
+    hover_texts.append(title)
+
+# Create the Scattergeo plot
+trace = go.Scattergeo(
+    lon=lons,
+    lat=lats,
+    text=hover_texts,
+    marker=dict(
+        size=[5 * mag for mag in mags],  # Adjust marker size based on magnitude
+        color=mags,  # Color by magnitude
+        colorscale='Viridis',
+        reversescale=True,
+        colorbar=dict(title='Magnitude'),
+    )
+)
+
+# Layout for the map
+layout = go.Layout(
+    title='Global Earthquakes',
+    geo=dict(
+        showland=True,
+        landcolor='lightgray',
+        lakecolor='white'
+    )
+)
+
+# Create the figure and plot it
+fig = go.Figure(data=[trace], layout=layout)
+
+# Display the plot in Colab
+iplot(fig)
